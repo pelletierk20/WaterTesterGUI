@@ -1,0 +1,10 @@
+.pi
+.battery
+adc
+pH breakout board (w/ cable pointing out)
+.temperature breakout board (w/ cable pointing out)
+water pressure sensor (mounted on inside pointing outwards)
+.dissolved oxygen breakout board (w/ cable pointing out)
+.conductivity breakout board
+conductivity sensor (mounted on inside pointing outwards)
+.orp breakout board (w/ cable pointing out)

@@ -1,0 +1,6 @@
+https://grabcad.com/library/raspberry-pi-3-b-1
+https://www.mcmaster.com/products/cable-pass-throughs/compact-plastic-submersible-cord-grips/
+https://github.com/adafruit/Adafruit_CAD_Parts/blob/main/353%206600mAh%20Battery/353%206600mAh%20Battery.step
+https://atlas-scientific.com/embedded-solutions/orp-sensor-meter/
+https://atlas-scientific.com/carrier-boards/electrically-isolated-ezo-carrier-board-gen-2/
+https://atlas-scientific.com/embedded-solutions/dissolved-oxygen-meter/
