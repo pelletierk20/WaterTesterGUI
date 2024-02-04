@@ -87,8 +87,8 @@ namespace WaterTesterGUI
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            startToolStripMenuItem.Enabled = false;
-            stopToolStripMenuItem.Enabled = true;
+            startToolStripMenuItem.Enabled = true;
+            stopToolStripMenuItem.Enabled = false;
             _worker.CancelAsync();
         }
 
