@@ -5,11 +5,14 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Security.Cryptography;
 
 namespace WaterTesterGUI
 {
@@ -24,11 +27,12 @@ namespace WaterTesterGUI
             InitializeComponent();
             setupDataGridView();
 
-            chart1.Titles.Add("Ph vs Time");
+            chart1.Titles.Add("pH vs Time");
 
 
 
         }
+
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -47,29 +51,91 @@ namespace WaterTesterGUI
                 {
                     if (_worker.CancellationPending)
                         break;
-                    
+
                     //Where we will add the actual data
+                    String responseData = String.Empty;
 
-                    Thread.Sleep(100); //delay for false data
+                    Int32 port = 631;
+                    IPAddress piAddr = IPAddress.Parse("192.168.56.1");
 
-                    string time = DateTime.Now.ToString("HH:mm:ss");
-                    Random r = new Random();
+                    TcpListener listener = new TcpListener(piAddr,port);
+                    listener.Start();
 
-                    //allows accesss to controls that are on main thread from the background worker
+                    Byte[] bytes = new Byte[256];
+                    String data = null;
 
-                    this.Invoke((MethodInvoker)delegate
+                    TcpClient client = listener.AcceptTcpClient();
+
+                    NetworkStream stream = client.GetStream();
+
+                    int i;
+
+                    // Loop to receive all the data sent by the client.
+                    while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                     {
-                        count++; //count for chart increasing
-                        double ph = Math.Round(r.NextDouble(), 2);
+                        // Translate data bytes to a ASCII string.
+                        data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
 
-                        dt.Rows.Add(time, ph,
-                                      Math.Round(r.NextDouble(), 2),
-                                      Math.Round(r.NextDouble(), 2),
-                                      Math.Round(r.NextDouble(), 2));
+                        string[] data_vector = data.Split('[', ']');
+                        data = data_vector[1];
+                        data_vector = data.Split(','); //ph:0 turb:1 temp:2
+                        //Console.WriteLine("Received: {0}", data);
 
-                        chart1.Series["ph"].Points.AddXY(count, ph);
-                        dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
-                    });
+
+
+
+                        //Parsing for GUI display section no TCP
+                        double pH = Convert.ToDouble(data_vector[0]);
+                        double turbidity = Convert.ToDouble(data_vector[1]);
+                        double temp = Convert.ToDouble(data_vector[2]);
+
+                        //Thread.Sleep(100); //delay for false data
+
+                        string time = DateTime.Now.ToString("HH:mm:ss");
+                        Random r = new Random();
+
+                        //allows accesss to controls that are on main thread from the background worker
+
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            count++; //count for chart increasing
+                            
+                            dt.Rows.Add(time,
+                                        pH,
+                                        turbidity,
+                                        temp,
+                                        Math.Round(r.NextDouble(), 2),
+                                        Math.Round(r.NextDouble(), 2));
+
+                            chart1.Series["ph"].Points.AddXY(count, pH);
+                            dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
+                        });
+
+
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    
 
             } while (true);
             });
@@ -112,10 +178,11 @@ namespace WaterTesterGUI
 
             //DataTable
             dt.Columns.Add("Time",typeof(string));
-            dt.Columns.Add("ph", typeof(float));
-            dt.Columns.Add("Temp", typeof(float));
-            dt.Columns.Add("Water Pressure", typeof(float));
+            dt.Columns.Add("pH", typeof(float));
             dt.Columns.Add("Turbidity", typeof(float));
+            dt.Columns.Add("Temp", typeof(float));
+            dt.Columns.Add("Dissolved Oxygen", typeof(float));
+            dt.Columns.Add("Oxygen Reduction Potential", typeof(float));
 
             dataGridView1.DataSource = dt;
         }
