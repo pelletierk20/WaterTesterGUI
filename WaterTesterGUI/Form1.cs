@@ -13,12 +13,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Security.Cryptography;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace WaterTesterGUI
 {
+    
     public partial class Form1 : Form
     {
-        
+        string ph_highThreshold = "15";
+
         DataTable dt = new DataTable();
         private BackgroundWorker _worker = null;
 
@@ -28,7 +31,7 @@ namespace WaterTesterGUI
             setupDataGridView();
 
             chart1.Titles.Add("pH vs Time");
-
+            
 
 
         }
@@ -47,95 +50,169 @@ namespace WaterTesterGUI
             
             _worker.DoWork += new DoWorkEventHandler((state, args) =>
             {
+                Int32 port = 631;
+                IPAddress piAddr = IPAddress.Parse("192.168.56.1");
+
+                TcpListener listener = new TcpListener(piAddr, port);
+                listener.Start();
+                TcpClient client = listener.AcceptTcpClient();
+                //client.ReceiveTimeout = 10;
                 do
                 {
                     if (_worker.CancellationPending)
                         break;
 
+
                     //Where we will add the actual data
                     String responseData = String.Empty;
-
-                    Int32 port = 631;
-                    IPAddress piAddr = IPAddress.Parse("192.168.56.1");
-
-                    TcpListener listener = new TcpListener(piAddr,port);
-                    listener.Start();
 
                     Byte[] bytes = new Byte[256];
                     String data = null;
 
-                    TcpClient client = listener.AcceptTcpClient();
 
                     NetworkStream stream = client.GetStream();
+                    
+                    int i = 0;
 
-                    int i;
+                    // Translate data bytes to a ASCII string.
 
-                    // Loop to receive all the data sent by the client.
-                    while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                    while (i == 0)
                     {
-                        // Translate data bytes to a ASCII string.
+
+
+                        try
+                        {
+                            i = stream.Read(bytes, 0, bytes.Length);
+                            Console.WriteLine(i);
+
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Not recieved Data");
+                        }
+
                         data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
 
-                        string[] data_vector = data.Split('[', ']');
-                        data = data_vector[1];
-                        data_vector = data.Split(','); //ph:0 turb:1 temp:2
-                        //Console.WriteLine("Received: {0}", data);
-
-
-
-
-                        //Parsing for GUI display section no TCP
-                        double pH = Convert.ToDouble(data_vector[0]);
-                        double turbidity = Convert.ToDouble(data_vector[1]);
-                        double temp = Convert.ToDouble(data_vector[2]);
-
-                        //Thread.Sleep(100); //delay for false data
-
-                        string time = DateTime.Now.ToString("HH:mm:ss");
-                        Random r = new Random();
-
-                        //allows accesss to controls that are on main thread from the background worker
-
-                        this.Invoke((MethodInvoker)delegate
+                        if (data == String.Empty)
                         {
-                            count++; //count for chart increasing
-                            
-                            dt.Rows.Add(time,
-                                        pH,
-                                        turbidity,
-                                        temp,
-                                        Math.Round(r.NextDouble(), 2),
-                                        Math.Round(r.NextDouble(), 2));
+                            client.Close();
+                            stream.Close();
+                            listener.Stop();
 
-                            chart1.Series["ph"].Points.AddXY(count, pH);
-                            dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
-                        });
+                            try
+                            {
+                                listener = new TcpListener(piAddr, port);
+                                listener.Start();
+                                client = listener.AcceptTcpClient();
+                                stream = client.GetStream();// Might not need cause do while will loop back line 69
 
+                            }
+                            catch
+                            {
+                                Console.WriteLine("YOU'RE MAD");
 
+                            }
+
+                        }
                     }
 
+                    // Parse for multiple messages
+
+                    string[] data_vector = data.Split('[', ']');
+                    data = data_vector[1];
+                    data_vector = data.Split(',');
 
 
 
 
+                    //Parsing for GUI display section no TCP
+                    //string time = data_vector[0];
+                    double runTime = Convert.ToDouble(data_vector[0]);
+                    runTime = Math.Round(runTime,2);
+                    double pH = Convert.ToDouble(data_vector[1]);
+                    double temp = Convert.ToDouble(data_vector[2]);
+                    double dissolved_oxygen = Convert.ToDouble(data_vector[3]);
+                    double orp = Convert.ToDouble(data_vector[4]);
+                    string time_of_Day = DateTime.Now.ToString("HH:mm:ss");
+
+
+                    //allows accesss to controls that are on main thread from the background worker
+
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        count++; //count for chart increasing
+                            
+                        dt.Rows.Add(time_of_Day,
+                                    pH,
+                                    temp,
+                                    dissolved_oxygen,
+                                    orp);
+
+
+                        //Update Threshold grid view start
+                        pH_time_text.Text = time_of_Day;
+                        temp_time_text.Text=time_of_Day;
+                        orp_time_text.Text = time_of_Day;
+                        do_time_text.Text = time_of_Day;
+
+                        
+
+                        //Convert string number to actual number for comparison indicator
+
+                        pH_curval_text.Text = pH.ToString();
+                        temp_curval_text.Text = temp.ToString();
+                        orp_curval_text.Text = orp.ToString();
+                        do_curval_text.Text = dissolved_oxygen.ToString();
+
+
+                        int ph_highThresh = Convert.ToInt32(ph_highThreshold); //global variable: ph_highThreshold
+                        int ph_lowThresh = Convert.ToInt32(pH_lThresh_text.Text);
+                        decimal ph_currVal = Convert.ToDecimal(pH_curval_text.Text);
+
+                        if (ph_currVal > ph_lowThresh && ph_currVal < ph_highThresh)
+                        {   //within bounds
+                            pH_indicator_text.Text = "Good";
+                            pH_indicator_text.ForeColor = Color.White;
+                            pH_indicator_text.BackColor = Color.Green;
+                        }
+                        else if(ph_currVal > ph_highThresh)
+                        {
+                            pH_indicator_text.Text = "High";
+                            pH_indicator_text.ForeColor = Color.Black;
+                            pH_indicator_text.BackColor = Color.Red;
+                        }
+                        else if (ph_currVal < ph_lowThresh)
+                        {
+                            pH_indicator_text.Text = "Low";
+                            pH_indicator_text.ForeColor = Color.Black;
+                            pH_indicator_text.BackColor = Color.Red;
+                        }
 
 
 
 
+                        //END
+
+                        chart1.Series["pH"].Points.AddXY(time_of_Day, pH);
+                        chart2.Series["Temp"].Points.AddXY(time_of_Day, temp);
+                        chart3.Series["DissolvedOxygen"].Points.AddXY(time_of_Day, dissolved_oxygen);
+                        chart4.Series["ORP"].Points.AddXY(time_of_Day, orp);
+                        dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
+
+                        LegendItem lit = new LegendItem();
+                        lit.Color = Color.Red;
+                        lit.SeriesName = "pH";
 
 
 
+                       
+                        chart1.Series["pH"].Points[count -1].Color = System.Drawing.Color.Red;
+                        chart2.Series["Temp"].Points[count-1].Color = System.Drawing.Color.Black;
+                        chart3.Series["DissolvedOxygen"].Points[count - 1].Color = System.Drawing.Color.Yellow;
+                        chart4.Series["ORP"].Points[count - 1].Color = System.Drawing.Color.Blue;
 
+                    });
 
-
-
-
-
-
-
-
-
-                    
 
             } while (true);
             });
@@ -177,18 +254,50 @@ namespace WaterTesterGUI
 
 
             //DataTable
-            dt.Columns.Add("Time",typeof(string));
+            dt.Columns.Add("Time", typeof(string));
+            //dt.Columns.Add("Run Time",typeof(float));
             dt.Columns.Add("pH", typeof(float));
-            dt.Columns.Add("Turbidity", typeof(float));
+            //dt.Columns.Add("Turbidity", typeof(float));
             dt.Columns.Add("Temp", typeof(float));
             dt.Columns.Add("Dissolved Oxygen", typeof(float));
             dt.Columns.Add("Oxygen Reduction Potential", typeof(float));
 
             dataGridView1.DataSource = dt;
+
+            
+            this.Text = "Water Quality Testing Software "+ DateTime.Now.ToString("MM/dd/yy");
+            //ph 0-15
+            pH_lThresh_text.Text = "0";
+            pH_hThresh_text.Text = "15";
+
+            //temp 40-80
+            temp_lThresh_text.Text = "40";
+            temp_hThresh_text.Text = "80";
+
+            //orp -1500 1500
+            orp_lThresh_text.Text = "-1500";
+            orp_hThresh_text.Text = "1500";
+
+            //DO 0 100%
+            do_lThresh_text.Text = "0";
+            do_hThresh_text.Text = "100";
         }
 
-
-
+        private void ph_hThresh_Leave(object sender, EventArgs e)
+        {
+            
+            try
+            {
+                //Try float conversion
+                Convert.ToInt32(pH_hThresh_text.Text);
+                ph_highThreshold = pH_hThresh_text.Text; //setting global variable to change when set
+            }
+            catch 
+            {
+                MessageBox.Show("Enter a valid number");
+                pH_hThresh_text.Text = "15";
+            }
+        }
     }
 
 
