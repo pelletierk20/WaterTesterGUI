@@ -28,18 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea25 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend25 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series25 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea26 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend26 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series26 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea27 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend27 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series27 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea28 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend28 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series28 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.testOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,14 +97,12 @@
             // 
             // menuStrip1
             // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(40, 40);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.testOptionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(16, 5, 0, 5);
-            this.menuStrip1.Size = new System.Drawing.Size(3147, 76);
+            this.menuStrip1.Size = new System.Drawing.Size(1171, 33);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -116,27 +114,27 @@
             this.saveToFileToolStripMenuItem1});
             this.testOptionsToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 14F);
             this.testOptionsToolStripMenuItem.Name = "testOptionsToolStripMenuItem";
-            this.testOptionsToolStripMenuItem.Size = new System.Drawing.Size(310, 66);
+            this.testOptionsToolStripMenuItem.Size = new System.Drawing.Size(127, 29);
             this.testOptionsToolStripMenuItem.Text = "Test Options";
             // 
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(439, 70);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(179, 30);
             this.startToolStripMenuItem.Text = "Start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(439, 70);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(179, 30);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // saveToFileToolStripMenuItem1
             // 
             this.saveToFileToolStripMenuItem1.Name = "saveToFileToolStripMenuItem1";
-            this.saveToFileToolStripMenuItem1.Size = new System.Drawing.Size(439, 70);
+            this.saveToFileToolStripMenuItem1.Size = new System.Drawing.Size(179, 30);
             this.saveToFileToolStripMenuItem1.Text = "Save to File";
             this.saveToFileToolStripMenuItem1.Click += new System.EventHandler(this.saveToFileToolStripMenuItem1_Click);
             // 
@@ -144,28 +142,26 @@
             // 
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(1408, 14);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.dataGridView1.Location = new System.Drawing.Point(528, 6);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 102;
-            this.dataGridView1.Size = new System.Drawing.Size(1637, 1009);
+            this.dataGridView1.Size = new System.Drawing.Size(614, 423);
             this.dataGridView1.TabIndex = 1;
             // 
             // chart1
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(16, 14);
-            this.chart1.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            chartArea25.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea25);
+            legend25.Name = "Legend1";
+            this.chart1.Legends.Add(legend25);
+            this.chart1.Location = new System.Drawing.Point(6, 6);
             this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Legend = "Legend1";
-            series1.Name = "pH";
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(1291, 551);
+            series25.ChartArea = "ChartArea1";
+            series25.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series25.Legend = "Legend1";
+            series25.Name = "pH";
+            this.chart1.Series.Add(series25);
+            this.chart1.Size = new System.Drawing.Size(484, 231);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "chart1";
             // 
@@ -173,11 +169,10 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(32, 86);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.tabControl1.Location = new System.Drawing.Point(12, 36);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(3083, 1209);
+            this.tabControl1.Size = new System.Drawing.Size(1156, 507);
             this.tabControl1.TabIndex = 3;
             // 
             // tabPage1
@@ -185,11 +180,10 @@
             this.tabPage1.Controls.Add(this.tableLayoutPanel1);
             this.tabPage1.Controls.Add(this.dataGridView1);
             this.tabPage1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.tabPage1.Location = new System.Drawing.Point(10, 48);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
-            this.tabPage1.Size = new System.Drawing.Size(3063, 1151);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1148, 481);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Data";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -232,8 +226,7 @@
             this.tableLayoutPanel1.Controls.Add(this.label3, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.pH_curval_text, 2, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(16, 14);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 6);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 5;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
@@ -241,270 +234,248 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1376, 1009);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(516, 423);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // orp_indicator_text
             // 
-            this.orp_indicator_text.Location = new System.Drawing.Point(1153, 811);
-            this.orp_indicator_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.orp_indicator_text.Location = new System.Drawing.Point(433, 339);
             this.orp_indicator_text.Name = "orp_indicator_text";
             this.orp_indicator_text.ReadOnly = true;
-            this.orp_indicator_text.Size = new System.Drawing.Size(207, 45);
+            this.orp_indicator_text.Size = new System.Drawing.Size(80, 23);
             this.orp_indicator_text.TabIndex = 29;
             // 
             // orp_lThresh_text
             // 
-            this.orp_lThresh_text.Location = new System.Drawing.Point(924, 811);
-            this.orp_lThresh_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.orp_lThresh_text.Location = new System.Drawing.Point(347, 339);
             this.orp_lThresh_text.Name = "orp_lThresh_text";
-            this.orp_lThresh_text.Size = new System.Drawing.Size(207, 45);
+            this.orp_lThresh_text.Size = new System.Drawing.Size(80, 23);
             this.orp_lThresh_text.TabIndex = 28;
+            this.orp_lThresh_text.Leave += new System.EventHandler(this.orp_lThresh_Leave);
             // 
             // orp_hThresh_text
             // 
-            this.orp_hThresh_text.Location = new System.Drawing.Point(695, 811);
-            this.orp_hThresh_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.orp_hThresh_text.Location = new System.Drawing.Point(261, 339);
             this.orp_hThresh_text.Name = "orp_hThresh_text";
-            this.orp_hThresh_text.Size = new System.Drawing.Size(207, 45);
+            this.orp_hThresh_text.Size = new System.Drawing.Size(80, 23);
             this.orp_hThresh_text.TabIndex = 27;
+            this.orp_hThresh_text.Leave += new System.EventHandler(this.orp_hThresh_Leave);
             // 
             // orp_curval_text
             // 
-            this.orp_curval_text.Location = new System.Drawing.Point(466, 811);
-            this.orp_curval_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.orp_curval_text.Location = new System.Drawing.Point(175, 339);
             this.orp_curval_text.Name = "orp_curval_text";
             this.orp_curval_text.ReadOnly = true;
-            this.orp_curval_text.Size = new System.Drawing.Size(207, 45);
+            this.orp_curval_text.Size = new System.Drawing.Size(80, 23);
             this.orp_curval_text.TabIndex = 26;
             // 
             // orp_time_text
             // 
-            this.orp_time_text.Location = new System.Drawing.Point(237, 811);
-            this.orp_time_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.orp_time_text.Location = new System.Drawing.Point(89, 339);
             this.orp_time_text.Name = "orp_time_text";
             this.orp_time_text.ReadOnly = true;
-            this.orp_time_text.Size = new System.Drawing.Size(207, 45);
+            this.orp_time_text.Size = new System.Drawing.Size(80, 23);
             this.orp_time_text.TabIndex = 25;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(8, 804);
-            this.label10.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label10.Location = new System.Drawing.Point(3, 336);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(180, 117);
+            this.label10.Size = new System.Drawing.Size(76, 51);
             this.label10.TabIndex = 24;
             this.label10.Text = "Oxygen Reduction Potential";
             // 
             // do_indicator_text
             // 
-            this.do_indicator_text.Location = new System.Drawing.Point(1153, 610);
-            this.do_indicator_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.do_indicator_text.Location = new System.Drawing.Point(433, 255);
             this.do_indicator_text.Name = "do_indicator_text";
             this.do_indicator_text.ReadOnly = true;
-            this.do_indicator_text.Size = new System.Drawing.Size(207, 45);
+            this.do_indicator_text.Size = new System.Drawing.Size(80, 23);
             this.do_indicator_text.TabIndex = 23;
             // 
             // do_lThresh_text
             // 
-            this.do_lThresh_text.Location = new System.Drawing.Point(924, 610);
-            this.do_lThresh_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.do_lThresh_text.Location = new System.Drawing.Point(347, 255);
             this.do_lThresh_text.Name = "do_lThresh_text";
-            this.do_lThresh_text.Size = new System.Drawing.Size(207, 45);
+            this.do_lThresh_text.Size = new System.Drawing.Size(80, 23);
             this.do_lThresh_text.TabIndex = 22;
+            this.do_lThresh_text.Leave += new System.EventHandler(this.do_lThresh_Leave);
             // 
             // do_hThresh_text
             // 
-            this.do_hThresh_text.Location = new System.Drawing.Point(695, 610);
-            this.do_hThresh_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.do_hThresh_text.Location = new System.Drawing.Point(261, 255);
             this.do_hThresh_text.Name = "do_hThresh_text";
-            this.do_hThresh_text.Size = new System.Drawing.Size(207, 45);
+            this.do_hThresh_text.Size = new System.Drawing.Size(80, 23);
             this.do_hThresh_text.TabIndex = 21;
+            this.do_hThresh_text.Leave += new System.EventHandler(this.do_hThresh_Leave);
             // 
             // do_curval_text
             // 
-            this.do_curval_text.Location = new System.Drawing.Point(466, 610);
-            this.do_curval_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.do_curval_text.Location = new System.Drawing.Point(175, 255);
             this.do_curval_text.Name = "do_curval_text";
             this.do_curval_text.ReadOnly = true;
-            this.do_curval_text.Size = new System.Drawing.Size(207, 45);
+            this.do_curval_text.Size = new System.Drawing.Size(80, 23);
             this.do_curval_text.TabIndex = 20;
             // 
             // do_time_text
             // 
-            this.do_time_text.Location = new System.Drawing.Point(237, 610);
-            this.do_time_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.do_time_text.Location = new System.Drawing.Point(89, 255);
             this.do_time_text.Name = "do_time_text";
             this.do_time_text.ReadOnly = true;
-            this.do_time_text.Size = new System.Drawing.Size(207, 45);
+            this.do_time_text.Size = new System.Drawing.Size(80, 23);
             this.do_time_text.TabIndex = 19;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(8, 603);
-            this.label9.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label9.Location = new System.Drawing.Point(3, 252);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(175, 78);
+            this.label9.Size = new System.Drawing.Size(73, 34);
             this.label9.TabIndex = 18;
             this.label9.Text = "Dissolved Oxygen";
             // 
             // temp_indicator_text
             // 
-            this.temp_indicator_text.Location = new System.Drawing.Point(1153, 409);
-            this.temp_indicator_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.temp_indicator_text.Location = new System.Drawing.Point(433, 171);
             this.temp_indicator_text.Name = "temp_indicator_text";
             this.temp_indicator_text.ReadOnly = true;
-            this.temp_indicator_text.Size = new System.Drawing.Size(207, 45);
+            this.temp_indicator_text.Size = new System.Drawing.Size(80, 23);
             this.temp_indicator_text.TabIndex = 17;
             // 
             // temp_lThresh_text
             // 
-            this.temp_lThresh_text.Location = new System.Drawing.Point(924, 409);
-            this.temp_lThresh_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.temp_lThresh_text.Location = new System.Drawing.Point(347, 171);
             this.temp_lThresh_text.Name = "temp_lThresh_text";
-            this.temp_lThresh_text.Size = new System.Drawing.Size(207, 45);
+            this.temp_lThresh_text.Size = new System.Drawing.Size(80, 23);
             this.temp_lThresh_text.TabIndex = 16;
+            this.temp_lThresh_text.Leave += new System.EventHandler(this.temp_lThresh_Leave);
             // 
             // temp_hThresh_text
             // 
-            this.temp_hThresh_text.Location = new System.Drawing.Point(695, 409);
-            this.temp_hThresh_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.temp_hThresh_text.Location = new System.Drawing.Point(261, 171);
             this.temp_hThresh_text.Name = "temp_hThresh_text";
-            this.temp_hThresh_text.Size = new System.Drawing.Size(207, 45);
+            this.temp_hThresh_text.Size = new System.Drawing.Size(80, 23);
             this.temp_hThresh_text.TabIndex = 15;
+            this.temp_hThresh_text.Leave += new System.EventHandler(this.temp_hThresh_Leave);
             // 
             // temp_curval_text
             // 
-            this.temp_curval_text.Location = new System.Drawing.Point(466, 409);
-            this.temp_curval_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.temp_curval_text.Location = new System.Drawing.Point(175, 171);
             this.temp_curval_text.Name = "temp_curval_text";
             this.temp_curval_text.ReadOnly = true;
-            this.temp_curval_text.Size = new System.Drawing.Size(207, 45);
+            this.temp_curval_text.Size = new System.Drawing.Size(80, 23);
             this.temp_curval_text.TabIndex = 14;
             // 
             // temp_time_text
             // 
-            this.temp_time_text.Location = new System.Drawing.Point(237, 409);
-            this.temp_time_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.temp_time_text.Location = new System.Drawing.Point(89, 171);
             this.temp_time_text.Name = "temp_time_text";
             this.temp_time_text.ReadOnly = true;
-            this.temp_time_text.Size = new System.Drawing.Size(207, 45);
+            this.temp_time_text.Size = new System.Drawing.Size(80, 23);
             this.temp_time_text.TabIndex = 13;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(8, 402);
-            this.label8.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label8.Location = new System.Drawing.Point(3, 168);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(104, 39);
+            this.label8.Size = new System.Drawing.Size(44, 17);
             this.label8.TabIndex = 12;
             this.label8.Text = "Temp";
             // 
             // pH_indicator_text
             // 
-            this.pH_indicator_text.Location = new System.Drawing.Point(1153, 208);
-            this.pH_indicator_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.pH_indicator_text.Location = new System.Drawing.Point(433, 87);
             this.pH_indicator_text.Name = "pH_indicator_text";
             this.pH_indicator_text.ReadOnly = true;
-            this.pH_indicator_text.Size = new System.Drawing.Size(207, 45);
+            this.pH_indicator_text.Size = new System.Drawing.Size(80, 23);
             this.pH_indicator_text.TabIndex = 11;
             // 
             // pH_lThresh_text
             // 
-            this.pH_lThresh_text.Location = new System.Drawing.Point(924, 208);
-            this.pH_lThresh_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.pH_lThresh_text.Location = new System.Drawing.Point(347, 87);
             this.pH_lThresh_text.Name = "pH_lThresh_text";
-            this.pH_lThresh_text.Size = new System.Drawing.Size(207, 45);
+            this.pH_lThresh_text.Size = new System.Drawing.Size(80, 23);
             this.pH_lThresh_text.TabIndex = 10;
+            this.pH_lThresh_text.Leave += new System.EventHandler(this.ph_lThresh_Leave);
             // 
             // pH_hThresh_text
             // 
-            this.pH_hThresh_text.Location = new System.Drawing.Point(695, 208);
-            this.pH_hThresh_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.pH_hThresh_text.Location = new System.Drawing.Point(261, 87);
             this.pH_hThresh_text.Name = "pH_hThresh_text";
-            this.pH_hThresh_text.Size = new System.Drawing.Size(207, 45);
+            this.pH_hThresh_text.Size = new System.Drawing.Size(80, 23);
             this.pH_hThresh_text.TabIndex = 9;
             this.pH_hThresh_text.Leave += new System.EventHandler(this.ph_hThresh_Leave);
             // 
             // pH_time_text
             // 
-            this.pH_time_text.Location = new System.Drawing.Point(237, 208);
-            this.pH_time_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.pH_time_text.Location = new System.Drawing.Point(89, 87);
             this.pH_time_text.Name = "pH_time_text";
             this.pH_time_text.ReadOnly = true;
-            this.pH_time_text.Size = new System.Drawing.Size(207, 45);
+            this.pH_time_text.Size = new System.Drawing.Size(80, 23);
             this.pH_time_text.TabIndex = 8;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(8, 201);
-            this.label7.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label7.Location = new System.Drawing.Point(3, 84);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(61, 39);
+            this.label7.Size = new System.Drawing.Size(26, 17);
             this.label7.TabIndex = 6;
             this.label7.Text = "pH";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(1153, 0);
-            this.label6.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label6.Location = new System.Drawing.Point(433, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(148, 39);
+            this.label6.Size = new System.Drawing.Size(62, 17);
             this.label6.TabIndex = 5;
             this.label6.Text = "Indicator";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(924, 0);
-            this.label5.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label5.Location = new System.Drawing.Point(347, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(195, 39);
+            this.label5.Size = new System.Drawing.Size(53, 34);
             this.label5.TabIndex = 4;
             this.label5.Text = "Low Thresh";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(695, 0);
-            this.label4.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label4.Location = new System.Drawing.Point(261, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(203, 39);
+            this.label4.Size = new System.Drawing.Size(53, 34);
             this.label4.TabIndex = 3;
             this.label4.Text = "High Thresh";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(466, 0);
-            this.label3.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label3.Location = new System.Drawing.Point(175, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(139, 78);
+            this.label3.Size = new System.Drawing.Size(59, 34);
             this.label3.TabIndex = 2;
             this.label3.Text = "Current Value";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(237, 0);
-            this.label2.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label2.Location = new System.Drawing.Point(89, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(93, 39);
+            this.label2.Size = new System.Drawing.Size(39, 17);
             this.label2.TabIndex = 1;
             this.label2.Text = "Time";
             // 
             // pH_curval_text
             // 
-            this.pH_curval_text.Location = new System.Drawing.Point(466, 208);
-            this.pH_curval_text.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.pH_curval_text.Location = new System.Drawing.Point(175, 87);
             this.pH_curval_text.Name = "pH_curval_text";
             this.pH_curval_text.ReadOnly = true;
-            this.pH_curval_text.Size = new System.Drawing.Size(207, 45);
+            this.pH_curval_text.Size = new System.Drawing.Size(80, 23);
             this.pH_curval_text.TabIndex = 7;
             // 
             // tabPage2
@@ -514,78 +485,73 @@
             this.tabPage2.Controls.Add(this.chart2);
             this.tabPage2.Controls.Add(this.chart1);
             this.tabPage2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.tabPage2.Location = new System.Drawing.Point(10, 48);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
-            this.tabPage2.Size = new System.Drawing.Size(3063, 1151);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1148, 481);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Graphs";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // chart4
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chart4.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chart4.Legends.Add(legend2);
-            this.chart4.Location = new System.Drawing.Point(1608, 582);
-            this.chart4.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            chartArea26.Name = "ChartArea1";
+            this.chart4.ChartAreas.Add(chartArea26);
+            legend26.Name = "Legend1";
+            this.chart4.Legends.Add(legend26);
+            this.chart4.Location = new System.Drawing.Point(603, 244);
             this.chart4.Name = "chart4";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Legend = "Legend1";
-            series2.Name = "ORP";
-            this.chart4.Series.Add(series2);
-            this.chart4.Size = new System.Drawing.Size(1291, 551);
+            series26.ChartArea = "ChartArea1";
+            series26.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series26.Legend = "Legend1";
+            series26.Name = "ORP";
+            this.chart4.Series.Add(series26);
+            this.chart4.Size = new System.Drawing.Size(484, 231);
             this.chart4.TabIndex = 5;
             this.chart4.Text = "chart4";
             // 
             // chart3
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chart3.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chart3.Legends.Add(legend3);
-            this.chart3.Location = new System.Drawing.Point(16, 582);
-            this.chart3.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            chartArea27.Name = "ChartArea1";
+            this.chart3.ChartAreas.Add(chartArea27);
+            legend27.Name = "Legend1";
+            this.chart3.Legends.Add(legend27);
+            this.chart3.Location = new System.Drawing.Point(6, 244);
             this.chart3.Name = "chart3";
-            series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series3.Legend = "Legend1";
-            series3.Name = "DissolvedOxygen";
-            this.chart3.Series.Add(series3);
-            this.chart3.Size = new System.Drawing.Size(1291, 551);
+            series27.ChartArea = "ChartArea1";
+            series27.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series27.Legend = "Legend1";
+            series27.Name = "DissolvedOxygen";
+            this.chart3.Series.Add(series27);
+            this.chart3.Size = new System.Drawing.Size(484, 231);
             this.chart3.TabIndex = 4;
             this.chart3.Text = "chart3";
             // 
             // chart2
             // 
-            chartArea4.Name = "ChartArea1";
-            this.chart2.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            this.chart2.Legends.Add(legend4);
-            this.chart2.Location = new System.Drawing.Point(1608, 14);
-            this.chart2.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            chartArea28.Name = "ChartArea1";
+            this.chart2.ChartAreas.Add(chartArea28);
+            legend28.Name = "Legend1";
+            this.chart2.Legends.Add(legend28);
+            this.chart2.Location = new System.Drawing.Point(603, 6);
             this.chart2.Name = "chart2";
-            series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series4.Legend = "Legend1";
-            series4.Name = "Temp";
-            this.chart2.Series.Add(series4);
-            this.chart2.Size = new System.Drawing.Size(1291, 551);
+            series28.ChartArea = "ChartArea1";
+            series28.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series28.Legend = "Legend1";
+            series28.Name = "Temp";
+            this.chart2.Series.Add(series28);
+            this.chart2.Size = new System.Drawing.Size(484, 231);
             this.chart2.TabIndex = 3;
             this.chart2.Text = "chart2";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(3147, 1323);
+            this.ClientSize = new System.Drawing.Size(1171, 504);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.Name = "Form1";
             this.Text = "Water Test";
             this.menuStrip1.ResumeLayout(false);
