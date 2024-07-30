@@ -33,6 +33,8 @@ namespace WaterTesterGUI
         string do_lThresh = "0";
         string do_hThresh= "100";
 
+        bool isRecording = false;
+
         Int32 port = 631;
         IPAddress piAddr = IPAddress.Parse("192.168.56.1");
         
@@ -40,6 +42,7 @@ namespace WaterTesterGUI
         
 
         DataTable dt = new DataTable();
+        DataTable dt_forCSV = new DataTable();
         private BackgroundWorker _worker = null;
 
         public Form1()
@@ -56,202 +59,29 @@ namespace WaterTesterGUI
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _worker = new BackgroundWorker();
-            _worker.WorkerSupportsCancellation = true;
-
-
-            int count = 0;
-            //This background worker will go until the stop button is pressed which will send a cancellation pending to break the loop
-
-            //This worker event handler is treated separetly from the rest of the code
             
-            _worker.DoWork += new DoWorkEventHandler((state, args) =>
-            {
-
-                listener = new TcpListener(piAddr, port);
-                listener.Start();
-                TcpClient client = listener.AcceptTcpClient();
-                //client.ReceiveTimeout = 10;
-                do
-                {
-                    if (_worker.CancellationPending)
-                        break;
-
-
-                    //Where we will add the actual data
-                    String responseData = String.Empty;
-
-                    Byte[] bytes = new Byte[256];
-                    String data = null;
-
-
-                    NetworkStream stream = client.GetStream();
-                    
-                    int i = 0;
-
-                    // Translate data bytes to a ASCII string.
-
-                    while (i == 0)
-                    {
-
-
-                        try
-                        {
-                            i = stream.Read(bytes, 0, bytes.Length);
-                            Console.WriteLine(i);
-
-                        }
-                        catch
-                        {
-                            Console.WriteLine("Not recieved Data");
-                        }
-
-                        data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-
-                        if (data == String.Empty)
-                        {
-                            client.Close();
-                            stream.Close();
-                            listener.Stop();
-
-                            try
-                            {
-                                listener = new TcpListener(piAddr, port);
-                                listener.Start();
-                                client = listener.AcceptTcpClient();
-                                stream = client.GetStream();// Might not need cause do while will loop back line 69
-
-                            }
-                            catch
-                            {
-                                Console.WriteLine("YOU'RE MAD");
-
-                            }
-
-                        }
-                    }
-
-                    // Parse for multiple messages
-
-                    string[] data_vector = data.Split('[', ']');
-                    data = data_vector[1];
-                    data_vector = data.Split(',');
-
-
-
-                    if (data_vector[0] == String.Empty)
-                    {
-                        continue;
-                    }
-
-
-                    //Parsing for GUI display section no TCP
-                    //string time = data_vector[0];
-                    double runTime = Convert.ToDouble(data_vector[0]);
-                    runTime = Math.Round(runTime, 2);
-                    double pH = Convert.ToDouble(data_vector[1]);
-                    double temp = Convert.ToDouble(data_vector[2]);
-                    double dissolved_oxygen = Convert.ToDouble(data_vector[3]);
-                    double orp = Convert.ToDouble(data_vector[4]);
-                    string time_of_Day = DateTime.Now.ToString("HH:mm:ss");
-                    
-                    
-
-
-                        //allows accesss to controls that are on main thread from the background worker
-
-                        this.Invoke((MethodInvoker)delegate
-                        {
-                            count++; //count for chart increasing
-
-                            dt.Rows.Add(time_of_Day,
-                                        pH,
-                                        temp,
-                                        dissolved_oxygen,
-                                        orp);
-
-
-                            //Update Threshold grid view start
-                            pH_time_text.Text = time_of_Day;
-                            temp_time_text.Text = time_of_Day;
-                            orp_time_text.Text = time_of_Day;
-                            do_time_text.Text = time_of_Day;
-
-
-
-                            //Convert string number to actual number for comparison indicator
-
-                            pH_curval_text.Text = pH.ToString();
-                            temp_curval_text.Text = temp.ToString();
-                            orp_curval_text.Text = orp.ToString();
-                            do_curval_text.Text = dissolved_oxygen.ToString();
-
-                            //Ph Threshold Update
-                            decimal ph_highThresh = Convert.ToDecimal(ph_hThresh); //global variable: ph_highThreshold
-                            decimal ph_lowThresh = Convert.ToDecimal(pH_lThresh);
-                            decimal ph_currVal = Convert.ToDecimal(pH_curval_text.Text);
-
-                            update_Threshold(ph_lowThresh, ph_highThresh, ph_currVal, pH_indicator_text);
-
-                            //temp Threshold Update
-                            update_Threshold(Convert.ToDecimal(temp_lThresh), Convert.ToDecimal(temp_hThresh),
-                                             Convert.ToDecimal(temp_curval_text.Text), temp_indicator_text);
-
-                            //ORP
-                            update_Threshold(Convert.ToDecimal(orp_lThresh), Convert.ToDecimal(orp_hThresh),
-                                             Convert.ToDecimal(orp_curval_text.Text), orp_indicator_text);
-
-                            //DO
-                            update_Threshold(Convert.ToDecimal(do_lThresh), Convert.ToDecimal(do_hThresh),
-                                             Convert.ToDecimal(do_curval_text.Text), do_indicator_text);
-
-
-                            //END
-
-                            chart1.Series["pH"].Points.AddXY(time_of_Day, pH);
-                            chart2.Series["Temp"].Points.AddXY(time_of_Day, temp);
-                            chart3.Series["DO"].Points.AddXY(time_of_Day, dissolved_oxygen);
-                            chart4.Series["ORP"].Points.AddXY(time_of_Day, orp);
-                            dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
-
-                            LegendItem lit = new LegendItem();
-                            lit.Color = Color.Red;
-                            lit.SeriesName = "pH";
-
-
-
-
-                            chart1.Series["pH"].Points[count - 1].Color = System.Drawing.Color.Red;
-                            chart2.Series["Temp"].Points[count - 1].Color = System.Drawing.Color.Black;
-                            chart3.Series["DO"].Points[count - 1].Color = System.Drawing.Color.Yellow;
-                            chart4.Series["ORP"].Points[count - 1].Color = System.Drawing.Color.Blue;
-
-                            Console.WriteLine("Count:"+count+"");
-                   
-                        });
-
-
-                    } while (true);
-            });
-
-            _worker.RunWorkerAsync();
-
-            //Enabel and disable start and stop menu buttons
-            startToolStripMenuItem.Enabled = false;
-            stopToolStripMenuItem.Enabled = true;
-            
+            isRecording = true;
 
             
 
         }
 
+        //Legend function
+        private void createLegend(string name, System.Drawing.Color color, Chart c)
+        {
+            Legend legend = new Legend();
+            legend.Name = name;
+            legend.ForeColor = color; // Set legend text color
+            //chart1.Legends.Add(legend);
+            c.Legends.Add(legend);
+        }
+
+
+
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            startToolStripMenuItem.Enabled = true;
-            stopToolStripMenuItem.Enabled = false;
-            _worker.CancelAsync();
-            listener.Stop();
             
+            isRecording=false;
         }
 
         private void saveToFileToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -304,6 +134,11 @@ namespace WaterTesterGUI
             //DO 0 100%
             do_lThresh_text.Text = do_lThresh;
             do_hThresh_text.Text = do_hThresh;
+
+            startToolStripMenuItem.Enabled = false;
+            stopToolStripMenuItem.Enabled = false;
+            saveToFileToolStripMenuItem1.Enabled = false;
+            disconnect.Enabled = false;
         }
 
 
@@ -450,6 +285,222 @@ namespace WaterTesterGUI
                 MessageBox.Show("Enter a valid number");
                 orp_lThresh_text.Text = "-1500";
             }
+        }
+
+        //Connect button Event
+        private void button1_Click(object sender, EventArgs e)
+        {
+            _worker = new BackgroundWorker();
+            _worker.WorkerSupportsCancellation = true;
+
+
+            int count = 0;
+            //This background worker will go until the stop button is pressed which will send a cancellation pending to break the loop
+
+            //This worker event handler is treated separetly from the rest of the code
+
+            _worker.DoWork += new DoWorkEventHandler((state, args) =>
+            {
+
+                listener = new TcpListener(piAddr, port);
+                listener.Start();
+                TcpClient client = listener.AcceptTcpClient();
+                //client.ReceiveTimeout = 10;
+                do
+                {
+                    if (_worker.CancellationPending)
+                        break;
+
+
+                    //Where we will add the actual data
+                    String responseData = String.Empty;
+
+                    Byte[] bytes = new Byte[256];
+                    String data = null;
+
+
+                    NetworkStream stream = client.GetStream();
+
+                    int i = 0;
+
+                    // Translate data bytes to a ASCII string.
+
+                    while (i == 0)
+                    {
+
+
+                        try
+                        {
+                            i = stream.Read(bytes, 0, bytes.Length);
+                            Console.WriteLine(i);
+
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Not recieved Data");
+                        }
+
+                        data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+
+                        if (data == String.Empty)
+                        {
+                            client.Close();
+                            stream.Close();
+                            listener.Stop();
+
+                            try
+                            {
+                                listener = new TcpListener(piAddr, port);
+                                listener.Start();
+                                client = listener.AcceptTcpClient();
+                                stream = client.GetStream();// Might not need cause do while will loop back line 69
+
+                            }
+                            catch
+                            {
+                                Console.WriteLine("YOU'RE MAD");
+
+                            }
+
+                        }
+                    }
+
+                    // Parse for multiple messages
+
+                    string[] data_vector = data.Split('[', ']');
+                    data = data_vector[1];
+                    data_vector = data.Split(',');
+
+
+
+                    if (data_vector[0] == String.Empty)
+                    {
+                        continue;
+                    }
+
+
+                    //Parsing for GUI display section no TCP
+                    //string time = data_vector[0];
+                    double runTime = Convert.ToDouble(data_vector[0]);
+                    runTime = Math.Round(runTime, 2);
+                    double pH = Convert.ToDouble(data_vector[1]);
+                    double temp = Convert.ToDouble(data_vector[2]);
+                    double dissolved_oxygen = Convert.ToDouble(data_vector[3]);
+                    double orp = Convert.ToDouble(data_vector[4]);
+                    string time_of_Day = DateTime.Now.ToString("HH:mm:ss");
+
+
+
+
+                    //allows accesss to controls that are on main thread from the background worker
+
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        //Enable options when connected
+                        startToolStripMenuItem.Enabled = true;
+                        stopToolStripMenuItem.Enabled = true;
+                        saveToFileToolStripMenuItem1.Enabled = true;
+                        disconnect.Enabled = true;
+
+
+
+                        count++; //count for chart increasing
+
+                        dt.Rows.Add(time_of_Day,
+                                    pH,
+                                    temp,
+                                    dissolved_oxygen,
+                                    orp);
+
+                        if(isRecording)
+                        {
+                            dt_forCSV.Rows.Add(time_of_Day,
+                                    pH,
+                                    temp,
+                                    dissolved_oxygen,
+                                    orp);
+                        }
+
+                        //Update Threshold grid view start
+                        pH_time_text.Text = time_of_Day;
+                        temp_time_text.Text = time_of_Day;
+                        orp_time_text.Text = time_of_Day;
+                        do_time_text.Text = time_of_Day;
+
+
+
+                        //Convert string number to actual number for comparison indicator
+
+                        pH_curval_text.Text = pH.ToString();
+                        temp_curval_text.Text = temp.ToString();
+                        orp_curval_text.Text = orp.ToString();
+                        do_curval_text.Text = dissolved_oxygen.ToString();
+
+                        //Ph Threshold Update
+                        decimal ph_highThresh = Convert.ToDecimal(ph_hThresh); //global variable: ph_highThreshold
+                        decimal ph_lowThresh = Convert.ToDecimal(pH_lThresh);
+                        decimal ph_currVal = Convert.ToDecimal(pH_curval_text.Text);
+
+                        update_Threshold(ph_lowThresh, ph_highThresh, ph_currVal, pH_indicator_text);
+
+                        //temp Threshold Update
+                        update_Threshold(Convert.ToDecimal(temp_lThresh), Convert.ToDecimal(temp_hThresh),
+                                         Convert.ToDecimal(temp_curval_text.Text), temp_indicator_text);
+
+                        //ORP
+                        update_Threshold(Convert.ToDecimal(orp_lThresh), Convert.ToDecimal(orp_hThresh),
+                                         Convert.ToDecimal(orp_curval_text.Text), orp_indicator_text);
+
+                        //DO
+                        update_Threshold(Convert.ToDecimal(do_lThresh), Convert.ToDecimal(do_hThresh),
+                                         Convert.ToDecimal(do_curval_text.Text), do_indicator_text);
+
+
+                        //END
+
+                        chart1.Series["pH"].Points.AddXY(time_of_Day, pH);
+                        chart2.Series["Temp"].Points.AddXY(time_of_Day, temp);
+                        chart3.Series["DO"].Points.AddXY(time_of_Day, dissolved_oxygen);
+                        chart4.Series["ORP"].Points.AddXY(time_of_Day, orp);
+                        dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
+
+
+
+                        createLegend("pH", System.Drawing.Color.Red, chart1);
+                        createLegend("Temp", System.Drawing.Color.Black, chart2);
+                        createLegend("DO", System.Drawing.Color.Orange, chart3);
+                        createLegend("ORP", System.Drawing.Color.Blue, chart4);
+
+                        chart1.Series["pH"].Points[count - 1].Color = System.Drawing.Color.Red;
+                        chart2.Series["Temp"].Points[count - 1].Color = System.Drawing.Color.Black;
+                        chart3.Series["DO"].Points[count - 1].Color = System.Drawing.Color.Yellow;
+                        chart4.Series["ORP"].Points[count - 1].Color = System.Drawing.Color.Blue;
+
+                        Console.WriteLine("Count:" + count + "");
+
+                    });
+
+
+                } while (true);
+            });
+
+            _worker.RunWorkerAsync();
+
+            //Enabel and disable start and stop menu buttons
+            startToolStripMenuItem.Enabled = false;
+            stopToolStripMenuItem.Enabled = true;
+
+
+
+
+        }
+
+        private void disconnect_Click(object sender, EventArgs e)
+        {
+            startToolStripMenuItem.Enabled = true;
+            stopToolStripMenuItem.Enabled = false;
+            _worker.CancelAsync();
+            listener.Stop();
         }
     }
 
