@@ -521,7 +521,7 @@
             series27.ChartArea = "ChartArea1";
             series27.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             series27.Legend = "Legend1";
-            series27.Name = "DissolvedOxygen";
+            series27.Name = "DO";
             this.chart3.Series.Add(series27);
             this.chart3.Size = new System.Drawing.Size(484, 231);
             this.chart3.TabIndex = 4;

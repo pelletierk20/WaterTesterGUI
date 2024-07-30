@@ -33,6 +33,12 @@ namespace WaterTesterGUI
         string do_lThresh = "0";
         string do_hThresh= "100";
 
+        Int32 port = 631;
+        IPAddress piAddr = IPAddress.Parse("192.168.56.1");
+        
+        TcpListener listener = null;
+        
+
         DataTable dt = new DataTable();
         private BackgroundWorker _worker = null;
 
@@ -61,10 +67,8 @@ namespace WaterTesterGUI
             
             _worker.DoWork += new DoWorkEventHandler((state, args) =>
             {
-                Int32 port = 631;
-                IPAddress piAddr = IPAddress.Parse("192.168.56.1");
 
-                TcpListener listener = new TcpListener(piAddr, port);
+                listener = new TcpListener(piAddr, port);
                 listener.Start();
                 TcpClient client = listener.AcceptTcpClient();
                 //client.ReceiveTimeout = 10;
@@ -135,90 +139,99 @@ namespace WaterTesterGUI
 
 
 
+                    if (data_vector[0] == String.Empty)
+                    {
+                        continue;
+                    }
+
 
                     //Parsing for GUI display section no TCP
                     //string time = data_vector[0];
                     double runTime = Convert.ToDouble(data_vector[0]);
-                    runTime = Math.Round(runTime,2);
+                    runTime = Math.Round(runTime, 2);
                     double pH = Convert.ToDouble(data_vector[1]);
                     double temp = Convert.ToDouble(data_vector[2]);
                     double dissolved_oxygen = Convert.ToDouble(data_vector[3]);
                     double orp = Convert.ToDouble(data_vector[4]);
                     string time_of_Day = DateTime.Now.ToString("HH:mm:ss");
+                    
+                    
 
 
-                    //allows accesss to controls that are on main thread from the background worker
+                        //allows accesss to controls that are on main thread from the background worker
 
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        count++; //count for chart increasing
-                            
-                        dt.Rows.Add(time_of_Day,
-                                    pH,
-                                    temp,
-                                    dissolved_oxygen,
-                                    orp);
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            count++; //count for chart increasing
 
-
-                        //Update Threshold grid view start
-                        pH_time_text.Text = time_of_Day;
-                        temp_time_text.Text=time_of_Day;
-                        orp_time_text.Text = time_of_Day;
-                        do_time_text.Text = time_of_Day;
-
-                        
-
-                        //Convert string number to actual number for comparison indicator
-
-                        pH_curval_text.Text = pH.ToString();
-                        temp_curval_text.Text = temp.ToString();
-                        orp_curval_text.Text = orp.ToString();
-                        do_curval_text.Text = dissolved_oxygen.ToString();
-
-                        //Ph Threshold Update
-                        decimal ph_highThresh = Convert.ToDecimal(ph_hThresh); //global variable: ph_highThreshold
-                        decimal ph_lowThresh = Convert.ToDecimal(pH_lThresh);
-                        decimal ph_currVal = Convert.ToDecimal(pH_curval_text.Text);
-
-                        update_Threshold(ph_lowThresh, ph_highThresh, ph_currVal, pH_indicator_text);
-
-                        //temp Threshold Update
-                        update_Threshold(Convert.ToDecimal(temp_lThresh),          Convert.ToDecimal(temp_hThresh), 
-                                         Convert.ToDecimal(temp_curval_text.Text), temp_indicator_text);
-
-                        //ORP
-                        update_Threshold(Convert.ToDecimal(orp_lThresh), Convert.ToDecimal(orp_hThresh),
-                                         Convert.ToDecimal(orp_curval_text.Text), orp_indicator_text);
-
-                        //DO
-                        update_Threshold(Convert.ToDecimal(do_lThresh), Convert.ToDecimal(do_hThresh),
-                                         Convert.ToDecimal(do_curval_text.Text), do_indicator_text);
+                            dt.Rows.Add(time_of_Day,
+                                        pH,
+                                        temp,
+                                        dissolved_oxygen,
+                                        orp);
 
 
-                        //END
-
-                        chart1.Series["pH"].Points.AddXY(time_of_Day, pH);
-                        chart2.Series["Temp"].Points.AddXY(time_of_Day, temp);
-                        chart3.Series["DissolvedOxygen"].Points.AddXY(time_of_Day, dissolved_oxygen);
-                        chart4.Series["ORP"].Points.AddXY(time_of_Day, orp);
-                        dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
-
-                        LegendItem lit = new LegendItem();
-                        lit.Color = Color.Red;
-                        lit.SeriesName = "pH";
+                            //Update Threshold grid view start
+                            pH_time_text.Text = time_of_Day;
+                            temp_time_text.Text = time_of_Day;
+                            orp_time_text.Text = time_of_Day;
+                            do_time_text.Text = time_of_Day;
 
 
 
-                       
-                        chart1.Series["pH"].Points[count -1].Color = System.Drawing.Color.Red;
-                        chart2.Series["Temp"].Points[count-1].Color = System.Drawing.Color.Black;
-                        chart3.Series["DissolvedOxygen"].Points[count - 1].Color = System.Drawing.Color.Yellow;
-                        chart4.Series["ORP"].Points[count - 1].Color = System.Drawing.Color.Blue;
+                            //Convert string number to actual number for comparison indicator
 
-                    });
+                            pH_curval_text.Text = pH.ToString();
+                            temp_curval_text.Text = temp.ToString();
+                            orp_curval_text.Text = orp.ToString();
+                            do_curval_text.Text = dissolved_oxygen.ToString();
+
+                            //Ph Threshold Update
+                            decimal ph_highThresh = Convert.ToDecimal(ph_hThresh); //global variable: ph_highThreshold
+                            decimal ph_lowThresh = Convert.ToDecimal(pH_lThresh);
+                            decimal ph_currVal = Convert.ToDecimal(pH_curval_text.Text);
+
+                            update_Threshold(ph_lowThresh, ph_highThresh, ph_currVal, pH_indicator_text);
+
+                            //temp Threshold Update
+                            update_Threshold(Convert.ToDecimal(temp_lThresh), Convert.ToDecimal(temp_hThresh),
+                                             Convert.ToDecimal(temp_curval_text.Text), temp_indicator_text);
+
+                            //ORP
+                            update_Threshold(Convert.ToDecimal(orp_lThresh), Convert.ToDecimal(orp_hThresh),
+                                             Convert.ToDecimal(orp_curval_text.Text), orp_indicator_text);
+
+                            //DO
+                            update_Threshold(Convert.ToDecimal(do_lThresh), Convert.ToDecimal(do_hThresh),
+                                             Convert.ToDecimal(do_curval_text.Text), do_indicator_text);
 
 
-            } while (true);
+                            //END
+
+                            chart1.Series["pH"].Points.AddXY(time_of_Day, pH);
+                            chart2.Series["Temp"].Points.AddXY(time_of_Day, temp);
+                            chart3.Series["DO"].Points.AddXY(time_of_Day, dissolved_oxygen);
+                            chart4.Series["ORP"].Points.AddXY(time_of_Day, orp);
+                            dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
+
+                            LegendItem lit = new LegendItem();
+                            lit.Color = Color.Red;
+                            lit.SeriesName = "pH";
+
+
+
+
+                            chart1.Series["pH"].Points[count - 1].Color = System.Drawing.Color.Red;
+                            chart2.Series["Temp"].Points[count - 1].Color = System.Drawing.Color.Black;
+                            chart3.Series["DO"].Points[count - 1].Color = System.Drawing.Color.Yellow;
+                            chart4.Series["ORP"].Points[count - 1].Color = System.Drawing.Color.Blue;
+
+                            Console.WriteLine("Count:"+count+"");
+                   
+                        });
+
+
+                    } while (true);
             });
 
             _worker.RunWorkerAsync();
@@ -237,6 +250,8 @@ namespace WaterTesterGUI
             startToolStripMenuItem.Enabled = true;
             stopToolStripMenuItem.Enabled = false;
             _worker.CancelAsync();
+            listener.Stop();
+            
         }
 
         private void saveToFileToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -294,7 +309,7 @@ namespace WaterTesterGUI
 
         private void update_Threshold(decimal low, decimal high, decimal current, System.Windows.Forms.TextBox indicator_text)
         {
-            if (current > low && current < high)
+            if (current >= low && current <= high)
             {   //within bounds
                 indicator_text.Text = "Good";
                 indicator_text.ForeColor = Color.White;
