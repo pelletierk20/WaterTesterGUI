@@ -33,6 +33,19 @@ namespace WaterTesterGUI
         string do_lThresh = "0";
         string do_hThresh= "100";
 
+        double lowest_Temp = 0.0;
+        double lowest_pH = 0.0;
+        double lowest_DO = 0.0;
+        double loweset_ORP = 0.0;
+
+        double highest_Temp = 0.0;
+        double highest_pH = 0.0;
+        double highest_DO = 0.0;
+        double highest_ORP = 0.0;
+
+
+        bool first_values = false;
+
         bool isRecording = false;
 
         Int32 port = 631;
@@ -51,8 +64,9 @@ namespace WaterTesterGUI
             setupDataGridView();
 
             chart1.Titles.Add("pH vs Time");
-            
-
+            chart2.Titles.Add("Temperature vs Time");
+            chart3.Titles.Add("Dissolved Oxygen vs Time");
+            chart4.Titles.Add("Oxidation Reduction Potential vs Time");
 
         }
 
@@ -66,15 +80,7 @@ namespace WaterTesterGUI
 
         }
 
-        //Legend function
-        private void createLegend(string name, System.Drawing.Color color, Chart c)
-        {
-            Legend legend = new Legend();
-            legend.Name = name;
-            legend.ForeColor = color; // Set legend text color
-            //chart1.Legends.Add(legend);
-            c.Legends.Add(legend);
-        }
+        
 
 
 
@@ -91,7 +97,7 @@ namespace WaterTesterGUI
             saveFileDialog.FileName = "waterTest_" + time+".csv";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                dt.ToCSV(saveFileDialog.FileName);
+                dt_forCSV.ToCSV(saveFileDialog.FileName);
             }
 
 
@@ -104,12 +110,19 @@ namespace WaterTesterGUI
 
             //DataTable
             dt.Columns.Add("Time", typeof(string));
-            //dt.Columns.Add("Run Time",typeof(float));
             dt.Columns.Add("pH", typeof(float));
-            //dt.Columns.Add("Turbidity", typeof(float));
             dt.Columns.Add("Temp", typeof(float));
             dt.Columns.Add("Dissolved Oxygen", typeof(float));
-            dt.Columns.Add("Oxygen Reduction Potential", typeof(float));
+            dt.Columns.Add("Oxidation Reduction Potential", typeof(float));
+
+
+
+            //recording data table
+            dt_forCSV.Columns.Add("Time", typeof(string));
+            dt_forCSV.Columns.Add("pH", typeof(float));
+            dt_forCSV.Columns.Add("Temp", typeof(float));
+            dt_forCSV.Columns.Add("Dissolved Oxygen", typeof(float));
+            dt_forCSV.Columns.Add("Oxidation Reduction Potential", typeof(float));
 
             dataGridView1.DataSource = dt;
 
@@ -365,6 +378,8 @@ namespace WaterTesterGUI
                         }
                     }
 
+                    
+
                     // Parse for multiple messages
 
                     string[] data_vector = data.Split('[', ']');
@@ -383,14 +398,38 @@ namespace WaterTesterGUI
                     //string time = data_vector[0];
                     double runTime = Convert.ToDouble(data_vector[0]);
                     runTime = Math.Round(runTime, 2);
+
                     double pH = Convert.ToDouble(data_vector[1]);
+                    pH = Math.Round(pH, 2);
+
                     double temp = Convert.ToDouble(data_vector[2]);
+                    temp = Math.Round(temp, 2);
+
                     double dissolved_oxygen = Convert.ToDouble(data_vector[3]);
+                    dissolved_oxygen = Math.Round(dissolved_oxygen, 2);
+
                     double orp = Convert.ToDouble(data_vector[4]);
+                    orp = Math.Round(orp, 2);
+
                     string time_of_Day = DateTime.Now.ToString("HH:mm:ss");
 
 
+                    if(first_values == false)
+                    {
+                        lowest_pH = pH;
+                        lowest_Temp = temp;
+                        lowest_DO = dissolved_oxygen;
+                        loweset_ORP = orp;
 
+                        highest_pH = pH;
+                        highest_Temp = temp;
+                        highest_DO = dissolved_oxygen;
+                        highest_ORP = orp;
+
+                        first_values = true;
+                    }
+
+                    
 
                     //allows accesss to controls that are on main thread from the background worker
 
@@ -401,7 +440,7 @@ namespace WaterTesterGUI
                         stopToolStripMenuItem.Enabled = true;
                         saveToFileToolStripMenuItem1.Enabled = true;
                         disconnect.Enabled = true;
-
+                        Connect.Enabled = false;
 
 
                         count++; //count for chart increasing
@@ -458,6 +497,33 @@ namespace WaterTesterGUI
 
                         //END
 
+                        //Setting lowest Y value for graphing
+                        update_lowestY(lowest_pH, pH,"pH");
+                        update_lowestY(lowest_Temp, temp,"Temp");
+                        update_lowestY(lowest_DO, dissolved_oxygen,"DO");
+                        update_lowestY(loweset_ORP, orp,"ORP");
+
+                        update_highestY(highest_pH, pH,"pH");
+                        update_highestY(highest_Temp, temp,"Temp");
+                        update_highestY(highest_DO, dissolved_oxygen,"DO");
+                        update_highestY(highest_ORP, orp,"ORP");
+
+
+
+                        chart1.ChartAreas[0].AxisY.Maximum = highest_pH + 2;
+                        chart1.ChartAreas[0].AxisY.Minimum = lowest_pH - 2;
+
+                        chart2.ChartAreas[0].AxisY.Maximum = highest_Temp + 2;
+                        chart2.ChartAreas[0].AxisY.Minimum = lowest_Temp - 2;
+
+                        chart3.ChartAreas[0].AxisY.Maximum = highest_DO + 2;
+                        chart3.ChartAreas[0].AxisY.Minimum = lowest_DO - 2;
+
+                        chart4.ChartAreas[0].AxisY.Maximum = highest_ORP + 2;
+                        chart4.ChartAreas[0].AxisY.Minimum = loweset_ORP - 2;
+
+
+
                         chart1.Series["pH"].Points.AddXY(time_of_Day, pH);
                         chart2.Series["Temp"].Points.AddXY(time_of_Day, temp);
                         chart3.Series["DO"].Points.AddXY(time_of_Day, dissolved_oxygen);
@@ -465,18 +531,12 @@ namespace WaterTesterGUI
                         dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
 
 
-
-                        createLegend("pH", System.Drawing.Color.Red, chart1);
-                        createLegend("Temp", System.Drawing.Color.Black, chart2);
-                        createLegend("DO", System.Drawing.Color.Orange, chart3);
-                        createLegend("ORP", System.Drawing.Color.Blue, chart4);
-
                         chart1.Series["pH"].Points[count - 1].Color = System.Drawing.Color.Red;
                         chart2.Series["Temp"].Points[count - 1].Color = System.Drawing.Color.Black;
-                        chart3.Series["DO"].Points[count - 1].Color = System.Drawing.Color.Yellow;
+                        chart3.Series["DO"].Points[count - 1].Color = System.Drawing.Color.Orange;
                         chart4.Series["ORP"].Points[count - 1].Color = System.Drawing.Color.Blue;
 
-                        Console.WriteLine("Count:" + count + "");
+                        //Console.WriteLine("Count:" + count + "");
 
                     });
 
@@ -497,10 +557,56 @@ namespace WaterTesterGUI
 
         private void disconnect_Click(object sender, EventArgs e)
         {
+            Connect.Enabled = true;
             startToolStripMenuItem.Enabled = true;
             stopToolStripMenuItem.Enabled = false;
             _worker.CancelAsync();
             listener.Stop();
+        }
+
+        private void update_lowestY(double lowest, double current,string sensor)
+        {
+            if (current < lowest)
+            {
+                if(sensor == "Temp")
+                {
+                    lowest_Temp = current;
+                }
+                else if (sensor == "pH")
+                {
+                    lowest_pH = current;
+                }
+                else if (sensor == "ORP")
+                {
+                    loweset_ORP = current;
+                }
+                else if (sensor == "DO")
+                {
+                    lowest_DO = current;
+                }
+            }
+        }
+        private void update_highestY(double highest, double current,string sensor)
+        {
+            if (current > highest)
+            {
+                if (sensor == "Temp")
+                {
+                    highest_Temp = current;
+                }
+                else if (sensor == "pH")
+                {
+                    highest_pH = current;
+                }
+                else if (sensor == "ORP")
+                {
+                    highest_ORP = current;
+                }
+                else if (sensor == "DO")
+                {
+                    highest_DO = current;
+                }
+            }
         }
     }
 
