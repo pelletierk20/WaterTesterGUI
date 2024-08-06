@@ -17,21 +17,21 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace WaterTesterGUI
 {
-    
+
     public partial class Form1 : Form
     {
         string ph_hThresh = "15";
         string pH_lThresh = "0";
 
-            
+
         string temp_lThresh = "40";
         string temp_hThresh = "80";
 
         string orp_lThresh = "-1500";
-        string orp_hThresh= "1500";
+        string orp_hThresh = "1500";
 
         string do_lThresh = "0";
-        string do_hThresh= "100";
+        string do_hThresh = "100";
 
         double lowest_Temp = 0.0;
         double lowest_pH = 0.0;
@@ -43,6 +43,9 @@ namespace WaterTesterGUI
         double highest_DO = 0.0;
         double highest_ORP = 0.0;
 
+        int connect_attempt = 0;
+        int disconnect_attempt = 0;
+
 
         bool first_values = false;
 
@@ -50,9 +53,10 @@ namespace WaterTesterGUI
 
         Int32 port = 631;
         IPAddress piAddr = IPAddress.Parse("192.168.56.1");
-        
+        TcpClient client = null;
+
         TcpListener listener = null;
-        
+
 
         DataTable dt = new DataTable();
         DataTable dt_forCSV = new DataTable();
@@ -68,33 +72,35 @@ namespace WaterTesterGUI
             chart3.Titles.Add("Dissolved Oxygen vs Time");
             chart4.Titles.Add("Oxidation Reduction Potential vs Time");
 
+
+
         }
 
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
             isRecording = true;
 
-            
+
 
         }
 
-        
+
 
 
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
-            isRecording=false;
+
+            isRecording = false;
         }
 
         private void saveToFileToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog(); 
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
             string time = DateTime.Now.ToString("MM_dd_yy__HH_mm_ss");
-            saveFileDialog.FileName = "waterTest_" + time+".csv";
+            saveFileDialog.FileName = "waterTest_" + time + ".csv";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 dt_forCSV.ToCSV(saveFileDialog.FileName);
@@ -126,10 +132,10 @@ namespace WaterTesterGUI
 
             dataGridView1.DataSource = dt;
 
-            
-            this.Text = "Water Quality Testing Software "+ DateTime.Now.ToString("MM/dd/yy");
-            
-            
+
+            this.Text = "Water Quality Testing Software " + DateTime.Now.ToString("MM/dd/yy");
+
+
             //Setting up thresholds to be global versions for initial changes            
             //ph 0-15
             pH_lThresh_text.Text = pH_lThresh;
@@ -176,6 +182,22 @@ namespace WaterTesterGUI
                 indicator_text.BackColor = Color.Red;
             }
         }
+        private bool check_Thresholds(double low, double high)
+        {
+            
+
+            if (low >= high){
+                MessageBox.Show("Lower Bound must be less than higher bound!");
+                return false;
+            } 
+            else if(high <= low)
+            {
+                MessageBox.Show("Higher Bound must be greater than lower bound!");
+                return false;
+            }
+            else return true;
+
+        }
 
         //Threshold Leave EVENTS
 
@@ -185,8 +207,20 @@ namespace WaterTesterGUI
             try
             {
                 //Try float conversion
-                Convert.ToInt32(pH_hThresh_text.Text);
-                ph_hThresh   = pH_hThresh_text.Text; //setting global variable to change when set
+                
+                double low = Convert.ToDouble(pH_lThresh);
+                double high = Convert.ToDouble(pH_hThresh_text.Text);
+                bool valid = check_Thresholds(low,high);
+                if (valid)
+                {
+                    ph_hThresh = pH_hThresh_text.Text; //setting global variable to change when set
+                }
+                else
+                {
+                    pH_hThresh_text.Text = "15";
+                }
+                
+
             }
             catch 
             {
@@ -200,23 +234,49 @@ namespace WaterTesterGUI
             try
             {
                 //Try float conversion
-                Convert.ToInt32(pH_lThresh_text.Text);
-                pH_lThresh = pH_lThresh_text.Text; //setting global variable to change when set
+
+                double low = Convert.ToDouble(pH_lThresh_text.Text);
+                double high = Convert.ToDouble(ph_hThresh);
+                bool valid = check_Thresholds(low, high);
+                if (valid)
+                {
+                    pH_lThresh = pH_lThresh_text.Text; //setting global variable to change when set
+                }
+                else
+                {
+                    pH_lThresh_text.Text = "0";
+                }
+
+
             }
             catch
             {
                 MessageBox.Show("Enter a valid number");
                 pH_lThresh_text.Text = "0";
             }
+
         }
 
         private void temp_hThresh_Leave(object sender, EventArgs e)
         {
+            //80
             try
             {
                 //Try float conversion
-                Convert.ToInt32(temp_hThresh_text.Text);
-                temp_hThresh = temp_hThresh_text.Text; //setting global variable to change when set
+
+                double low = Convert.ToDouble(temp_lThresh);
+                double high = Convert.ToDouble(temp_hThresh_text.Text);
+                bool valid = check_Thresholds(low, high);
+                if (valid)
+                {
+                    temp_hThresh = temp_hThresh_text.Text; //setting global variable to change when set
+                }
+                else
+                {
+                    temp_hThresh_text.Text = "80";
+                }
+
+
             }
             catch
             {
@@ -227,11 +287,24 @@ namespace WaterTesterGUI
 
         private void temp_lThresh_Leave(object sender, EventArgs e)
         {
+            //40
             try
             {
                 //Try float conversion
-                Convert.ToInt32(temp_lThresh_text.Text);
-                temp_lThresh = temp_lThresh_text.Text; //setting global variable to change when set
+
+                double low = Convert.ToDouble(temp_lThresh_text.Text);
+                double high = Convert.ToDouble(temp_hThresh);
+                bool valid = check_Thresholds(low, high);
+                if (valid)
+                {
+                    temp_lThresh = temp_lThresh_text.Text; //setting global variable to change when set
+                }
+                else
+                {
+                    temp_lThresh_text.Text = "40";
+                }
+
+
             }
             catch
             {
@@ -242,11 +315,24 @@ namespace WaterTesterGUI
 
         private void do_hThresh_Leave(object sender, EventArgs e)
         {
+            //100
             try
             {
                 //Try float conversion
-                Convert.ToInt32(do_hThresh_text.Text);
-                do_hThresh = do_hThresh_text.Text; //setting global variable to change when set
+
+                double low = Convert.ToDouble(do_lThresh);
+                double high = Convert.ToDouble(do_hThresh_text.Text);
+                bool valid = check_Thresholds(low, high);
+                if (valid)
+                {
+                    do_hThresh = do_hThresh_text.Text; //setting global variable to change when set
+                }
+                else
+                {
+                    do_hThresh_text.Text = "100";
+                }
+
+
             }
             catch
             {
@@ -257,11 +343,24 @@ namespace WaterTesterGUI
 
         private void do_lThresh_Leave(object sender, EventArgs e)
         {
+            //0
             try
             {
                 //Try float conversion
-                Convert.ToInt32(do_lThresh_text.Text);
-                do_lThresh = do_lThresh_text.Text; //setting global variable to change when set
+
+                double low = Convert.ToDouble(do_lThresh_text.Text);
+                double high = Convert.ToDouble(do_hThresh);
+                bool valid = check_Thresholds(low, high);
+                if (valid)
+                {
+                    do_lThresh = do_lThresh_text.Text; //setting global variable to change when set
+                }
+                else
+                {
+                    do_lThresh_text.Text = "0";
+                }
+
+
             }
             catch
             {
@@ -272,11 +371,24 @@ namespace WaterTesterGUI
 
         private void orp_hThresh_Leave(object sender, EventArgs e)
         {
+            //1500
             try
             {
                 //Try float conversion
-                Convert.ToInt32(orp_hThresh_text.Text);
-                orp_hThresh = orp_hThresh_text.Text; //setting global variable to change when set
+
+                double low = Convert.ToDouble(orp_lThresh);
+                double high = Convert.ToDouble(orp_hThresh_text.Text);
+                bool valid = check_Thresholds(low, high);
+                if (valid)
+                {
+                    orp_hThresh = orp_hThresh_text.Text; //setting global variable to change when set
+                }
+                else
+                {
+                    orp_hThresh_text.Text = "1500";
+                }
+
+
             }
             catch
             {
@@ -287,11 +399,24 @@ namespace WaterTesterGUI
 
         private void orp_lThresh_Leave(object sender, EventArgs e)
         {
+            //-1500
             try
             {
                 //Try float conversion
-                Convert.ToInt32(orp_lThresh_text.Text);
-                orp_lThresh = orp_lThresh_text.Text; //setting global variable to change when set
+
+                double low = Convert.ToDouble(orp_lThresh_text.Text);
+                double high = Convert.ToDouble(orp_hThresh);
+                bool valid = check_Thresholds(low, high);
+                if (valid)
+                {
+                    orp_lThresh = orp_lThresh_text.Text; //setting global variable to change when set
+                }
+                else
+                {
+                    orp_lThresh_text.Text = "-1500";
+                }
+
+
             }
             catch
             {
@@ -303,6 +428,8 @@ namespace WaterTesterGUI
         //Connect button Event
         private void button1_Click(object sender, EventArgs e)
         {
+            this.Cursor = Cursors.WaitCursor;
+
             _worker = new BackgroundWorker();
             _worker.WorkerSupportsCancellation = true;
 
@@ -315,234 +442,259 @@ namespace WaterTesterGUI
             _worker.DoWork += new DoWorkEventHandler((state, args) =>
             {
 
-                listener = new TcpListener(piAddr, port);
-                listener.Start();
-                TcpClient client = listener.AcceptTcpClient();
-                //client.ReceiveTimeout = 10;
-                do
+                if (connect_attempt == 0)
                 {
-                    if (_worker.CancellationPending)
-                        break;
-
-
-                    //Where we will add the actual data
-                    String responseData = String.Empty;
-
-                    Byte[] bytes = new Byte[256];
-                    String data = null;
-
-
-                    NetworkStream stream = client.GetStream();
-
-                    int i = 0;
-
-                    // Translate data bytes to a ASCII string.
-
-                    while (i == 0)
-                    {
-
-
-                        try
-                        {
-                            i = stream.Read(bytes, 0, bytes.Length);
-                            Console.WriteLine(i);
-
-                        }
-                        catch
-                        {
-                            Console.WriteLine("Not recieved Data");
-                        }
-
-                        data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-
-                        if (data == String.Empty)
-                        {
-                            client.Close();
-                            stream.Close();
-                            listener.Stop();
-
-                            try
-                            {
-                                listener = new TcpListener(piAddr, port);
-                                listener.Start();
-                                client = listener.AcceptTcpClient();
-                                stream = client.GetStream();// Might not need cause do while will loop back line 69
-
-                            }
-                            catch
-                            {
-                                Console.WriteLine("YOU'RE MAD");
-
-                            }
-
-                        }
-                    }
+                   
+                    connect_attempt++;
+                    listener = new TcpListener(piAddr, port);
+                    listener.Start();
+                    client = listener.AcceptTcpClient();
 
                     
-
-                    // Parse for multiple messages
-
-                    string[] data_vector = data.Split('[', ']');
-                    data = data_vector[1];
-                    data_vector = data.Split(',');
-
-
-
-                    if (data_vector[0] == String.Empty)
+                    do
                     {
-                        continue;
-                    }
-
-
-                    //Parsing for GUI display section no TCP
-                    //string time = data_vector[0];
-                    double runTime = Convert.ToDouble(data_vector[0]);
-                    runTime = Math.Round(runTime, 2);
-
-                    double pH = Convert.ToDouble(data_vector[1]);
-                    pH = Math.Round(pH, 2);
-
-                    double temp = Convert.ToDouble(data_vector[2]);
-                    temp = Math.Round(temp, 2);
-
-                    double dissolved_oxygen = Convert.ToDouble(data_vector[3]);
-                    dissolved_oxygen = Math.Round(dissolved_oxygen, 2);
-
-                    double orp = Convert.ToDouble(data_vector[4]);
-                    orp = Math.Round(orp, 2);
-
-                    string time_of_Day = DateTime.Now.ToString("HH:mm:ss");
-
-
-                    if(first_values == false)
-                    {
-                        lowest_pH = pH;
-                        lowest_Temp = temp;
-                        lowest_DO = dissolved_oxygen;
-                        loweset_ORP = orp;
-
-                        highest_pH = pH;
-                        highest_Temp = temp;
-                        highest_DO = dissolved_oxygen;
-                        highest_ORP = orp;
-
-                        first_values = true;
-                    }
-
-                    
-
-                    //allows accesss to controls that are on main thread from the background worker
-
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        //Enable options when connected
-                        startToolStripMenuItem.Enabled = true;
-                        stopToolStripMenuItem.Enabled = true;
-                        saveToFileToolStripMenuItem1.Enabled = true;
-                        disconnect.Enabled = true;
-                        Connect.Enabled = false;
-
-
-                        count++; //count for chart increasing
-
-                        dt.Rows.Add(time_of_Day,
-                                    pH,
-                                    temp,
-                                    dissolved_oxygen,
-                                    orp);
-
-                        if(isRecording)
+                        if (_worker.CancellationPending)
                         {
-                            dt_forCSV.Rows.Add(time_of_Day,
-                                    pH,
-                                    temp,
-                                    dissolved_oxygen,
-                                    orp);
+                            this.Invoke((MethodInvoker)delegate
+                            {
+                                //performs extra click to ensure no auto connect after trying to disconnect
+                                disconnect.PerformClick(); 
+                            });
+                            break;
+                        }
+                        else
+                        {
+
+
+
+                            //Where we will add the actual data
+                            String responseData = String.Empty;
+
+                            Byte[] bytes = new Byte[256];
+                            String data = null;
+
+
+                            NetworkStream stream = client.GetStream();
+
+                            int i = 0;
+
+                            // Translate data bytes to a ASCII string.
+
+                            while (i == 0)
+                            {
+
+                                
+
+                                try
+                                {
+                                    i = stream.Read(bytes, 0, bytes.Length);
+                                    Console.WriteLine(i);
+
+                                }
+                                catch
+                                {
+                                    Console.WriteLine("Not recieved Data");
+                                }
+
+                                data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+
+                                if (data == String.Empty)
+                                {
+                                    client.Close();
+                                    stream.Close();
+                                    listener.Stop();
+
+                                    try
+                                    {
+                                        listener = new TcpListener(piAddr, port);
+                                        listener.Start();
+                                        client = listener.AcceptTcpClient();
+                                        stream = client.GetStream();// Might not need cause do while will loop back line 69
+
+                                    }
+                                    catch
+                                    {
+                                        Console.WriteLine("YOU'RE MAD");
+
+                                    }
+
+                                }
+                            }
+
+
+
+                            // Parse for multiple messages
+
+                            string[] data_vector = data.Split('[', ']');
+                            data = data_vector[1];
+                            data_vector = data.Split(',');
+
+
+
+                            if (data_vector[0] == String.Empty)
+                            {
+                                continue;
+                            }
+
+
+                            //Parsing for GUI display section no TCP
+                            //string time = data_vector[0];
+                            double runTime = Convert.ToDouble(data_vector[0]);
+                            runTime = Math.Round(runTime, 2);
+
+                            double pH = Convert.ToDouble(data_vector[1]);
+                            pH = Math.Round(pH, 2);
+
+                            double temp = Convert.ToDouble(data_vector[2]);
+                            temp = Math.Round(temp, 2);
+
+                            double dissolved_oxygen = Convert.ToDouble(data_vector[3]);
+                            dissolved_oxygen = Math.Round(dissolved_oxygen, 2);
+
+                            double orp = Convert.ToDouble(data_vector[4]);
+                            orp = Math.Round(orp, 2);
+
+                            string time_of_Day = DateTime.Now.ToString("HH:mm:ss");
+
+
+                            if (first_values == false)
+                            {
+                                lowest_pH = pH;
+                                lowest_Temp = temp;
+                                lowest_DO = dissolved_oxygen;
+                                loweset_ORP = orp;
+
+                                highest_pH = pH;
+                                highest_Temp = temp;
+                                highest_DO = dissolved_oxygen;
+                                highest_ORP = orp;
+
+                                first_values = true;
+                            }
+
+
+
+                            //allows accesss to controls that are on main thread from the background worker
+
+                            this.Invoke((MethodInvoker)delegate
+                            {
+                                //System.Windows.Forms.Cursor.Current = Cursors.Default;
+                                //Enable options when connected
+                                this.Cursor = Cursors.Default;
+                                startToolStripMenuItem.Enabled = true;
+                                stopToolStripMenuItem.Enabled = true;
+                                saveToFileToolStripMenuItem1.Enabled = true;
+                                disconnect.Enabled = true;
+                                Connect.Enabled = false;
+
+
+                                count++; //count for chart increasing
+
+                                dt.Rows.Add(time_of_Day,
+                                            pH,
+                                            temp,
+                                            dissolved_oxygen,
+                                            orp);
+
+                                if (isRecording)
+                                {
+                                    dt_forCSV.Rows.Add(time_of_Day,
+                                            pH,
+                                            temp,
+                                            dissolved_oxygen,
+                                            orp);
+                                }
+
+                                //Update Threshold grid view start
+                                pH_time_text.Text = time_of_Day;
+                                temp_time_text.Text = time_of_Day;
+                                orp_time_text.Text = time_of_Day;
+                                do_time_text.Text = time_of_Day;
+
+
+
+                                //Convert string number to actual number for comparison indicator
+
+                                pH_curval_text.Text = pH.ToString();
+                                temp_curval_text.Text = temp.ToString();
+                                orp_curval_text.Text = orp.ToString();
+                                do_curval_text.Text = dissolved_oxygen.ToString();
+
+                                //Ph Threshold Update
+                                decimal ph_highThresh = Convert.ToDecimal(ph_hThresh); //global variable: ph_highThreshold
+                                decimal ph_lowThresh = Convert.ToDecimal(pH_lThresh);
+                                decimal ph_currVal = Convert.ToDecimal(pH_curval_text.Text);
+
+                                update_Threshold(ph_lowThresh, ph_highThresh, ph_currVal, pH_indicator_text);
+
+                                //temp Threshold Update
+                                update_Threshold(Convert.ToDecimal(temp_lThresh), Convert.ToDecimal(temp_hThresh),
+                                                 Convert.ToDecimal(temp_curval_text.Text), temp_indicator_text);
+
+                                //ORP
+                                update_Threshold(Convert.ToDecimal(orp_lThresh), Convert.ToDecimal(orp_hThresh),
+                                                 Convert.ToDecimal(orp_curval_text.Text), orp_indicator_text);
+
+                                //DO
+                                update_Threshold(Convert.ToDecimal(do_lThresh), Convert.ToDecimal(do_hThresh),
+                                                 Convert.ToDecimal(do_curval_text.Text), do_indicator_text);
+
+
+                                //END
+
+                                //Setting lowest Y value for graphing
+                                update_lowestY(lowest_pH, pH, "pH");
+                                update_lowestY(lowest_Temp, temp, "Temp");
+                                update_lowestY(lowest_DO, dissolved_oxygen, "DO");
+                                update_lowestY(loweset_ORP, orp, "ORP");
+
+                                update_highestY(highest_pH, pH, "pH");
+                                update_highestY(highest_Temp, temp, "Temp");
+                                update_highestY(highest_DO, dissolved_oxygen, "DO");
+                                update_highestY(highest_ORP, orp, "ORP");
+
+
+
+                                chart1.ChartAreas[0].AxisY.Maximum = highest_pH + 2;
+                                chart1.ChartAreas[0].AxisY.Minimum = lowest_pH - 2;
+
+                                chart2.ChartAreas[0].AxisY.Maximum = highest_Temp + 2;
+                                chart2.ChartAreas[0].AxisY.Minimum = lowest_Temp - 2;
+
+                                chart3.ChartAreas[0].AxisY.Maximum = highest_DO + 2;
+                                chart3.ChartAreas[0].AxisY.Minimum = lowest_DO - 2;
+
+                                chart4.ChartAreas[0].AxisY.Maximum = highest_ORP + 2;
+                                chart4.ChartAreas[0].AxisY.Minimum = loweset_ORP - 2;
+
+
+
+                                chart1.Series["pH"].Points.AddXY(time_of_Day, pH);
+                                chart2.Series["Temp"].Points.AddXY(time_of_Day, temp);
+                                chart3.Series["DO"].Points.AddXY(time_of_Day, dissolved_oxygen);
+                                chart4.Series["ORP"].Points.AddXY(time_of_Day, orp);
+                                dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
+
+                                chart1.Series["pH"].Color = Color.Red;
+                                chart2.Series["Temp"].Color = Color.Black;
+                                chart3.Series["DO"].Color = Color.Orange;
+                                chart4.Series["ORP"].Color = Color.Blue;
+
+                                //chart1.Series["pH"].Points[count - 1].Color = System.Drawing.Color.Red;
+                                //chart2.Series["Temp"].Points[count - 1].Color = System.Drawing.Color.Black;
+                                //chart3.Series["DO"].Points[count - 1].Color = System.Drawing.Color.Orange;
+                                //chart4.Series["ORP"].Points[count - 1].Color = System.Drawing.Color.Blue;
+
+                                //Console.WriteLine("Count:" + count + "");
+
+                            });
+
                         }
 
-                        //Update Threshold grid view start
-                        pH_time_text.Text = time_of_Day;
-                        temp_time_text.Text = time_of_Day;
-                        orp_time_text.Text = time_of_Day;
-                        do_time_text.Text = time_of_Day;
-
-
-
-                        //Convert string number to actual number for comparison indicator
-
-                        pH_curval_text.Text = pH.ToString();
-                        temp_curval_text.Text = temp.ToString();
-                        orp_curval_text.Text = orp.ToString();
-                        do_curval_text.Text = dissolved_oxygen.ToString();
-
-                        //Ph Threshold Update
-                        decimal ph_highThresh = Convert.ToDecimal(ph_hThresh); //global variable: ph_highThreshold
-                        decimal ph_lowThresh = Convert.ToDecimal(pH_lThresh);
-                        decimal ph_currVal = Convert.ToDecimal(pH_curval_text.Text);
-
-                        update_Threshold(ph_lowThresh, ph_highThresh, ph_currVal, pH_indicator_text);
-
-                        //temp Threshold Update
-                        update_Threshold(Convert.ToDecimal(temp_lThresh), Convert.ToDecimal(temp_hThresh),
-                                         Convert.ToDecimal(temp_curval_text.Text), temp_indicator_text);
-
-                        //ORP
-                        update_Threshold(Convert.ToDecimal(orp_lThresh), Convert.ToDecimal(orp_hThresh),
-                                         Convert.ToDecimal(orp_curval_text.Text), orp_indicator_text);
-
-                        //DO
-                        update_Threshold(Convert.ToDecimal(do_lThresh), Convert.ToDecimal(do_hThresh),
-                                         Convert.ToDecimal(do_curval_text.Text), do_indicator_text);
-
-
-                        //END
-
-                        //Setting lowest Y value for graphing
-                        update_lowestY(lowest_pH, pH,"pH");
-                        update_lowestY(lowest_Temp, temp,"Temp");
-                        update_lowestY(lowest_DO, dissolved_oxygen,"DO");
-                        update_lowestY(loweset_ORP, orp,"ORP");
-
-                        update_highestY(highest_pH, pH,"pH");
-                        update_highestY(highest_Temp, temp,"Temp");
-                        update_highestY(highest_DO, dissolved_oxygen,"DO");
-                        update_highestY(highest_ORP, orp,"ORP");
-
-
-
-                        chart1.ChartAreas[0].AxisY.Maximum = highest_pH + 2;
-                        chart1.ChartAreas[0].AxisY.Minimum = lowest_pH - 2;
-
-                        chart2.ChartAreas[0].AxisY.Maximum = highest_Temp + 2;
-                        chart2.ChartAreas[0].AxisY.Minimum = lowest_Temp - 2;
-
-                        chart3.ChartAreas[0].AxisY.Maximum = highest_DO + 2;
-                        chart3.ChartAreas[0].AxisY.Minimum = lowest_DO - 2;
-
-                        chart4.ChartAreas[0].AxisY.Maximum = highest_ORP + 2;
-                        chart4.ChartAreas[0].AxisY.Minimum = loweset_ORP - 2;
-
-
-
-                        chart1.Series["pH"].Points.AddXY(time_of_Day, pH);
-                        chart2.Series["Temp"].Points.AddXY(time_of_Day, temp);
-                        chart3.Series["DO"].Points.AddXY(time_of_Day, dissolved_oxygen);
-                        chart4.Series["ORP"].Points.AddXY(time_of_Day, orp);
-                        dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
-
-
-                        chart1.Series["pH"].Points[count - 1].Color = System.Drawing.Color.Red;
-                        chart2.Series["Temp"].Points[count - 1].Color = System.Drawing.Color.Black;
-                        chart3.Series["DO"].Points[count - 1].Color = System.Drawing.Color.Orange;
-                        chart4.Series["ORP"].Points[count - 1].Color = System.Drawing.Color.Blue;
-
-                        //Console.WriteLine("Count:" + count + "");
-
-                    });
-
-
-                } while (true);
+                    } while (true);
+                }
             });
+        
 
             _worker.RunWorkerAsync();
 
@@ -558,10 +710,14 @@ namespace WaterTesterGUI
         private void disconnect_Click(object sender, EventArgs e)
         {
             Connect.Enabled = true;
+            disconnect.Enabled = false;
+            connect_attempt = 0;
             startToolStripMenuItem.Enabled = true;
             stopToolStripMenuItem.Enabled = false;
             _worker.CancelAsync();
             listener.Stop();
+
+            
         }
 
         private void update_lowestY(double lowest, double current,string sensor)
